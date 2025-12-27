@@ -1,0 +1,91 @@
+# =========================
+# Python / uv
+# 默认会创建本地虚拟环境
+# 不同机器不可复现
+# 属于绝对不该提交的内容
+
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# uv / virtual environment
+.venv/
+.uv/
+
+# =========================
+
+# =========================
+# Environment & Secrets
+# 安全隐私信息 不可提交
+
+.env
+.env.*
+!.env.example
+
+# =========================
+
+# =========================
+# LangChain / Observability
+# Trace 数据是运行时产物 不可提交
+
+.langchain/
+.langsmith/
+
+# =========================
+
+# =========================
+# Vector Store / RAG
+# 向量数据可再生 不可提交  但可以忽略数据，保留脚本
+
+chroma/
+chroma_db/
+vectorstore/
+*.sqlite3
+
+# =========================
+
+# =========================
+# Generated Content
+# 这是运行结果，不是源码
+
+generated_projects/*
+!generated_projects/.gitkeep
+
+# =========================
+
+
+# =========================
+# Logs & Runtime Artifacts
+# 日志文件 不可提交
+
+*.log
+logs/
+
+# =========================
+
+# =========================
+# OS / Editor
+
+.DS_Store
+Thumbs.db
+# =========================
+
+
+# =========================
+# VS Code
+# 跨平台
+# 避免污染仓库
+
+.vscode/
+
+# PyCharm / IntelliJ
+.idea/
+# =========================
+
+
+# =========================
+# Docker
+# 可能含密钥
+# =========================
+docker/*.env
