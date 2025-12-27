@@ -6,7 +6,7 @@ import uvicorn
 
 # 加载 .env
 load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
-from web.router.ws_router import router as ws_router
+from backend.router.ws_router import router as ws_router
 
 app = FastAPI(title="DevMate Agent")
 
