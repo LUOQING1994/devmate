@@ -1,0 +1,1 @@
+2025-12-27 15:37:39: 你好 & yes & lqq & {"agentinfos": {"status": "stop", "conversation_id": "3640133a-ad57-4af6-8e66-09f1d0539612", "llm_contents": "您好！很高兴为您服务。我是达州市高新区的政务服务助手，主要为大家解答关于就业创业、学习教育等方面的政策问题。您有什么需要咨询的吗？", "card_infos": {"zc_type": "10", "res_tel": "", "res_add": "", "res_tem": "", "zc_department_code": "", "zc_stage_code": ""}}}
