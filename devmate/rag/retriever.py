@@ -18,7 +18,7 @@ class LocalRAGRetriever:
             allow_dangerous_deserialization=True,
         )
 
-    def retrieve(self, query: str, k: int = 4) -> list[dict]:
+    def search_knowledge_base(self, query: str, k: int = 4) -> list[dict]:
         docs = self.vectorstore.similarity_search(query, k=k)
 
         results = []
@@ -30,3 +30,10 @@ class LocalRAGRetriever:
             })
 
         return results
+
+if __name__ == "__main__":
+    EMBEDDING_MODEL_NAME="text-embedding-v4"
+    EMBEDDING_MODEL_KEY="sk-d1964cfef7b1426fa6f54abb88377246"
+    LocalRAGRetriever(EMBEDDING_MODEL_NAME, EMBEDDING_MODEL_KEY)
+    query = ""
+    LocalRAGRetriever.search_knowledge_base(query)

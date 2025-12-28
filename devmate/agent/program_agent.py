@@ -113,7 +113,7 @@ class ProgramAgent():
 
         # ====== 1️⃣ RAG 本地检索 ======
         yield "[RAG] Retrieving local knowledge...\n"
-        rag_chunks = self.rag_retriever.retrieve(user_input)
+        rag_chunks = self.rag_retriever.search_knowledge_base(user_input)
 
         # ====== 2️⃣ MCP Web Search（可选） ======
         web_summary = None
