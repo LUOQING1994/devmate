@@ -104,7 +104,8 @@ devmate/
 - [X] **Iteration 2**：最小可运行 Agent（LLM + CLI）
   - 整合基于FastApi的前后端Websockt服务。添加Agent连接池，以提高项目的并发。
   - 重构部分项目框架，实现前端、后端、Agent端的三端分离。
-- [ ] **Iteration 3**：MCP Server + 网络搜索（Tavily）
+- [X] **Iteration 3**：MCP Server + 网络搜索（Tavily）
+  - 显示调用MCP的联网服务，为防止查询的内容过多导致token不可控，单独实现了查询内容摘要总结Agent。
 - [ ] **Iteration 4**：RAG 文档检索（本地知识库）
 - [ ] **Iteration 5**：多文件项目生成能力
 - [ ] **Iteration 6**：Docker 化与端到端验证

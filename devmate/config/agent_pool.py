@@ -51,7 +51,7 @@ AGENT_POOLS: Dict[str, AgentPool] = {
             api_key=os.getenv("API_KEY"),
             api_base_url=os.getenv("AI_BASE_URL"),
             model_name=os.getenv("MODEL_NAME", ""),
-            prompts= load_prompt("program_prompt.txt")
+            prompts= [load_prompt("program_prompt.txt"), load_prompt("search_summary_prompt.txt")]
         ),
         pool_size=30  # 最大 30 个 zwfw agent 并发
     )

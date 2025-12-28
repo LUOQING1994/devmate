@@ -37,7 +37,6 @@ async def websocket_agent(websocket: WebSocket, agent_type: str):
         
         if action == "start":
             
-
             if user_input == "":
                 await websocket.send_text("不能输入空数据进行咨询哦~")
                 return
