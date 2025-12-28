@@ -3,7 +3,7 @@ from typing import Optional
 
 @dataclass
 class AgentConfig:
-    api_key: str
+    api_keys: list
     api_base_url: str
-    model_name: Optional[str] = None
+    model_names: Optional[list] = None
     prompts: Optional[list] = None
