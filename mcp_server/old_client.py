@@ -4,6 +4,7 @@ from typing import Optional, Dict, Any, List
 
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
+import asyncio
 
 
 class MCPSearchClient:
@@ -98,22 +99,15 @@ class MCPSearchClient:
             except json.JSONDecodeError:
                 continue
 
-            for block in level1.get("content", []):
-                datas = block.get("datas")
-                if not datas:
+            for blockDatas in level1:
+                if not blockDatas:
                     continue
-
-                # 第二层 JSON（真正的搜索结果）
-                try:
-                    items = json.loads(datas)
-                except json.JSONDecodeError:
-                    continue
-
-                for item in items:
-                    final_results.append({
-                        "title": item.get("title", ""),
-                        "content": item.get("content", ""),
-                    })
+                final_results.append(blockDatas)
+                # for k_item, v_item in blockDatas.items():
+                #     final_results.append({
+                #         k_item: v_item
+                #         "content": item.get("content", ""),
+                #     })
 
         return final_results
 
@@ -132,3 +126,19 @@ class MCPSearchClient:
 
         self._connected = False
         print("🔒 MCP 连接已关闭", file=sys.stderr)
+
+
+async def main():
+    client = MCPSearchClient()
+
+    result = await client.search("东莞市 周边登山/徒步旅行最佳路线")
+    for r in result:
+        print(r["title"])
+        print(r["content"][:100])
+        print("-" * 40)
+
+    await client.close()
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

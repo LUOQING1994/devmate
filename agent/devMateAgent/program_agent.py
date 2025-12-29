@@ -1,7 +1,7 @@
 
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage, HumanMessage
-from mcp_server.client import MCPSearchClient
+from mcp_server.McpClient import MCPSearchClient
 from devmate.rag.retriever import LocalRAGRetriever
 
 class ProgramAgent():

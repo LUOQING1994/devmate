@@ -8,8 +8,8 @@ from langchain_community.embeddings import DashScopeEmbeddings
 
 from langchain_community.vectorstores import FAISS
 
-KB_DIR = Path("devmate/docs")
-VECTOR_DB_DIR = Path("devmate/.vector_db")
+KB_DIR = Path("knowledge_db/docs")
+VECTOR_DB_DIR = Path("knowledge_db/.vector_db")
 
 
 def ingest_documents(modelName, dashscope_api_key):
