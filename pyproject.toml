@@ -18,7 +18,7 @@ dependencies = [
     "langchain-community>=0.4.1",
     "dashscope>=1.25.5",
     "faiss-cpu>=1.13.2",
-    "deepagents>=0.3.1",
+    "deepagents>=0.3.1"
 ]
 
 [project.scripts]

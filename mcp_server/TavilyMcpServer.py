@@ -24,8 +24,23 @@ from mcp.server import Server, NotificationOptions
 from mcp.server.models import InitializationOptions
 import mcp.server.stdio
 import mcp.types as types
+from dotenv import load_dotenv
+from pathlib import Path
 
+# 1. 获取当前脚本的绝对路径
+current_file_path = Path(__file__).resolve()
 
+# 2. 找到项目的根目录 (即向上退一级): 
+project_root = current_file_path.parent.parent
+
+# 3. 拼接 .env 的绝对路径: 
+env_path = project_root / ".env"
+
+# 4. 加载环境变量
+load_dotenv(dotenv_path=env_path)
+# 打印一下，方便在 Docker 日志里调试（可选）
+print(f"DEBUG: 正在尝试加载 .env 文件，路径: {env_path}")
+print(f"DEBUG: .env 文件是否存在: {env_path.exists()}")
 # ===== 创建 MCP 服务器实例 =====
 server = Server("devmate-mcp-search")
 

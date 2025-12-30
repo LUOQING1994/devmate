@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+.env
+.venv/
+.idea/
+.vscode/
+
+.git/
+.gitignore
+
+generated_projects/

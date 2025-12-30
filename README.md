@@ -25,6 +25,10 @@
 - **配置优先**：所有模型、API Key、服务地址均通过环境变量配置，避免硬编码。
 - **渐进式交付**：每一个阶段都保证代码结构清晰、可运行、可追溯（Git Commit）。
 - **跨平台兼容**：本地开发环境为 Windows，代码实现中统一使用 pathlib，确保在 Linux / Docker 环境中正常运行。
+   DevMate 使用 docker-compose 编排以下服务：
+   - devmate-app：核心智能体应用
+   - mcp-search：基于 MCP 的搜索服务
+   - vector-db：RAG 向量数据持久化服务
 
 ## 👈 DevMate智能体流程
 

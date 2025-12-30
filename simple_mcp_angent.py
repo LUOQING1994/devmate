@@ -26,7 +26,7 @@ from dotenv import load_dotenv
 # ===== 本地模块 =====
 from mcp_server.McpClient import MCPClientManager
 from agent.devMateAgent.simple_agent import SimpleAgent
-from utils.search_knowledge import query_knowledge_base
+from utils.search_knowledge import search_knowledge_base
 from log.logging_config import setup_logging
 
 
@@ -76,15 +76,15 @@ async def run_my_agent() -> None:
     async with MCPClientManager(mcp_config) as mcp:
         tools = mcp.tools
 
+        # ===== 追加本地工具（RAG 检索） =====
+        logger.info("正在加载本地工具: search_knowledge_base")
+        tools.append(search_knowledge_base)
+        logger.info("本地工具加载完成")
+
         # 打印并确认已加载的 MCP 工具
         for tool in tools:
             logger.info("已加载 MCP 工具: %s", tool.name)
-
-        # ===== 追加本地工具（RAG 检索） =====
-        logger.info("正在加载本地工具: query_knowledge_base")
-        tools.append(query_knowledge_base)
-        logger.info("本地工具加载完成")
-
+            
         # ===== 3. 初始化 Agent（仅执行一次） =====
         devmate_agent = SimpleAgent(tools)
 

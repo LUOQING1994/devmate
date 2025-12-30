@@ -1,0 +1,49 @@
+services:
+  # ===============================
+  # 1. DevMate 主应用（Agent）
+  # ===============================
+  devmate-app:
+    container_name: devmate-app
+    image: devmate-app:latest
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    depends_on:
+      - mcp-search
+      - vector-db
+    env_file:
+      - ../.env
+    volumes:
+      - ..:/app                      
+      - /app/.venv                 
+      # Agent 生成的项目输出
+      - ../generated_projects:/app/generated_projects
+      # 本地知识库 + 向量索引
+      - ../knowledge_db:/app/knowledge_db
+    stdin_open: true
+    tty: true
+
+  # ===============================
+  # 2. MCP Search Server（Tavily）
+  # ===============================
+  mcp-search:
+    image: devmate-app:latest  # 确保这里引用的是上面 build 出来的镜像名
+    container_name: devmate-mcp-search
+    working_dir: /app
+    env_file:
+      - ../.env
+    volumes:
+      - ..:/app
+      # 关键：添加一个匿名卷，防止宿主机的 node_modules 或 .venv 覆盖容器内的
+      - /app/.venv  
+    # 建议使用 uv run 启动，它会自动处理环境路径
+    command: uv run python mcp_server/TavilyMcpServer.py
+  # ===============================
+  # 3. Vector DB（FAISS 数据容器）
+  # ===============================
+  vector-db:
+    image: alpine:latest
+    container_name: devmate-vector-db
+    volumes:
+      - ./knowledge_db:/data
+    command: ["sh", "-c", "tail -f /dev/null"]
