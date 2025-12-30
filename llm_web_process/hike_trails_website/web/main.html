@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/hike.css">
+</head>
+
+<body>
+    <!-- 导航栏 -->
+    <header class="navbar">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-mountain"></i>
+                <span>HikeTrails</span>
+            </div>
+            <nav class="nav-menu">
+                <a href="/" class="{{ 'active' if page == 'home' else '' }}">
+                    <i class="fas fa-home"></i> 首页
+                </a>
+                <a href="/routes" class="{{ 'active' if page == 'routes' else '' }}">
+                    <i class="fas fa-route"></i> 徒步路线
+                </a>
+                <a href="/map" class="{{ 'active' if page == 'map' else '' }}">
+                    <i class="fas fa-map"></i> 互动地图
+                </a>
+                <a href="/about" class="{{ 'active' if page == 'about' else '' }}">
+                    <i class="fas fa-info-circle"></i> 关于我们
+                </a>
+            </nav>
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- 首页内容 -->
+        {% if page == 'home' %}
+        <section class="hero">
+            <img src="https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg" alt="雪山风景"
+                class="hero-image">
+            <div class="hero-content">
+                <h1>探索大自然的奇迹</h1>
+                <p>东莞拥有众多美丽的徒步路线，从城市公园到原始森林，每条路线都有独特的风景和体验。我们的网站为您提供详细的路线信息、难度评级和互动地图，帮助您规划完美的徒步之旅。无论您是初学者还是经验丰富的徒步者，都能在这里找到适合您的路线。
+                </p>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="feature-card">
+                <i class="fas fa-map-marked-alt"></i>
+                <h3>详细路线</h3>
+                <p>提供完整的徒步路线信息，包括难度、特色和亮点。</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-mountain"></i>
+                <h3>互动地图</h3>
+                <p>使用Leaflet地图查看路线位置和距离信息。</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-hiking"></i>
+                <h3>适合所有人</h3>
+                <p>从入门级到挑战级，满足不同水平的徒步爱好者。</p>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- 路线页面内容 -->
+        {% if page == 'routes' %}
+        <section class="routes-header">
+            <h1><i class="fas fa-route"></i> 徒步路线</h1>
+            <p>探索东莞及周边地区的精选徒步路线</p>
+        </section>
+
+        <section class="trails-grid">
+            {% for trail in trails %}
+            <div class="trail-card">
+                <div class="trail-header">
+                    <h3>{{ trail.title }}</h3>
+                    <span class="difficulty">{{ trail.difficulty }}</span>
+                </div>
+                <div class="trail-content">
+                    <p><strong>路线特色：</strong>{{ trail.features }}</p>
+
+                    <div class="trail-data">
+                        <h4><i class="fas fa-chart-bar"></i> 路线数据</h4>
+                        <ul>
+                            {% for key, value in trail.data.items() %}
+                            <li><strong>{{ key }}：</strong>{{ value }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div class="trail-route">
+                        <h4><i class="fas fa-map-signs"></i> 路线图</h4>
+                        <p>{{ trail.route }}</p>
+                    </div>
+
+                    <div class="trail-choices">
+                        <h4><i class="fas fa-route"></i> 路线选择</h4>
+                        <ol>
+                            {% for choice in trail.choices %}
+                            <li>{{ choice }}</li>
+                            {% endfor %}
+                        </ol>
+                    </div>
+
+                    <div class="trail-highlights">
+                        <h4><i class="fas fa-star"></i> 亮点</h4>
+                        <p>{{ trail.highlights }}</p>
+                    </div>
+
+                    <div class="trail-coordinates">
+                        <p><i class="fas fa-map-pin"></i> <strong>景点经纬度坐标：</strong>{{ trail.coordinates }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </section>
+        {% endif %}
+
+        <!-- 地图页面内容 -->
+        {% if page == 'map' %}
+        <section class="map-header">
+            <h1><i class="fas fa-map"></i> 互动地图</h1>
+            <p>查看徒步路线位置和相关信息</p>
+        </section>
+
+        <div class="map-controls">
+            <div class="control-buttons">
+                <button id="getLocation" class="map-btn">
+                    <i class="fas fa-location-dot"></i> 获取我的位置
+                </button>
+                <button id="showNearby" class="map-btn">
+                    <i class="fas fa-mountain"></i> 显示周边路线
+                </button>
+                <button id="sortByDistance" class="map-btn">
+                    <i class="fas fa-sort-amount-down"></i> 按距离排序
+                </button>
+                <button id="showAllRoutes" class="map-btn">
+                    <i class="fas fa-globe"></i> 显示所有线路
+                </button>
+            </div>
+
+            <div class="info-display">
+                <div class="info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>位置信息：<strong id="locationInfo">{{ fixed_location.name }}</strong></span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-route"></i>
+                    <span>线路数量：<strong id="routeCount">0</strong> 条</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="map" class="map-container"></div>
+
+        <div class="trails-list" id="trailsList">
+            <h3><i class="fas fa-list"></i> 路线列表</h3>
+            <div class="list-container" id="trailsContainer">
+                <!-- 路线列表将通过JavaScript动态生成 -->
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- 关于我们页面内容 -->
+        {% if page == 'about' %}
+        <section class="about-header">
+            <h1><i class="fas fa-info-circle"></i> 关于我们</h1>
+        </section>
+
+        <section class="about-content">
+            <div class="about-image">
+                <img src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" alt="团队照片">
+            </div>
+
+            <div class="about-text">
+                <h2>我们的使命</h2>
+                <p>我们是一个热爱自然的团队，致力于为徒步爱好者提供最全面、最准确的徒步路线信息。我们的目标是通过这个平台，让更多人能够安全、愉快地探索大自然的美景。</p>
+
+                <h2>网站特色</h2>
+                <ul>
+                    <li><strong>详细路线信息：</strong>提供完整的徒步路线描述、难度评级和实用信息</li>
+                    <li><strong>互动地图：</strong>使用Leaflet地图技术，直观显示路线位置</li>
+                    <li><strong>距离计算：</strong>自动计算路线与指定位置的距离</li>
+                    <li><strong>响应式设计：</strong>在手机、平板和电脑上都能获得良好体验</li>
+                </ul>
+
+                <h2>技术栈</h2>
+                <div class="tech-stack">
+                    <span class="tech-tag">FastAPI</span>
+                    <span class="tech-tag">Leaflet</span>
+                    <span class="tech-tag">JavaScript</span>
+                    <span class="tech-tag">HTML5/CSS3</span>
+                    <span class="tech-tag">Font Awesome</span>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-mountain"></i>
+                    <span>HikeTrails</span>
+                </div>
+                <div class="footer-links">
+                    <a href="/"><i class="fas fa-home"></i> 首页</a>
+                    <a href="/routes"><i class="fas fa-route"></i> 路线</a>
+                    <a href="/map"><i class="fas fa-map"></i> 地图</a>
+                    <a href="/about"><i class="fas fa-info-circle"></i> 关于</a>
+                </div>
+                <div class="footer-info">
+                    <p><i class="fas fa-map-marker-alt"></i> {{ fixed_location.name if fixed_location else "东莞市-香芒东路" }}
+                    </p>
+                    <p><i class="fas fa-phone"></i> 400-123-4567</p>
+                    <p><i class="fas fa-envelope"></i> contact@hiketrails.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 HikeTrails 徒步旅行网站. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 地图页面专用脚本 -->
+    {% if page == 'map' %}
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="/static/hike.js"></script>
+    {% else %}
+    <script src="/static/hike.js"></script>
+    {% endif %}
+</body>
+
+</html>

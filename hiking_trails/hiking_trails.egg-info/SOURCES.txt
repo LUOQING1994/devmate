@@ -1,0 +1,8 @@
+README.md
+pyproject.toml
+hiking_trails.egg-info/PKG-INFO
+hiking_trails.egg-info/SOURCES.txt
+hiking_trails.egg-info/dependency_links.txt
+hiking_trails.egg-info/entry_points.txt
+hiking_trails.egg-info/requires.txt
+hiking_trails.egg-info/top_level.txt

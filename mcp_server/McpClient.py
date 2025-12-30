@@ -1,7 +1,8 @@
 import asyncio
 from typing import List, Any
 from langchain_mcp_adapters.client import MultiServerMCPClient
-
+from utils.load_prompt import find_project_root
+import os
 from log.logging_config import setup_logging
 import logging
 setup_logging()
@@ -14,12 +15,26 @@ class MCPClientManager:
         """
         :param server_config: MCP 服务器配置字典
         """
+        
+        # 定义你希望保存代码的本地根目录（必须是绝对路径）
+        PROJECT_ROOT = find_project_root()
+        PROMPTS_DIR = os.path.join(PROJECT_ROOT, "generated_projects")
+        if os.path.exists(PROMPTS_DIR):
+            os.makedirs(PROMPTS_DIR, exist_ok=True)
+            
         # 默认配置，如果外部没传则使用你提供的默认配置
         self.server_config = server_config or {
             "mcp_server": {
                 "transport": "stdio",
                 "command": "python",
-                "args": ["mcp_server/server.py"],
+                "args": ["mcp_server/TavilyMcpServer.py"],
+            },
+            "filesystem": {
+            "transport": "stdio",
+            "command": "mcp-server-filesystem",
+                "args": [
+                    PROMPTS_DIR
+                ]
             }
         }
         self.client = None

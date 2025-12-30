@@ -7,12 +7,18 @@ requires-python = ">=3.13"
 
 dependencies = [
     "fastapi>=0.127.1",
-    "langchain>=1.1.0",
+    "langchain>=1.2.0",
     "langchain-openai>=0.1.0",
     "python-dotenv>=1.0.1",
     "uvicorn[standard]>=0.40.0",
     "tavily-python>=0.3.0",
     "mcp>=1.0.0",
+    "colorlog>=6.10.1",
+    "langchain-mcp-adapters>=0.2.1",
+    "langchain-community>=0.4.1",
+    "dashscope>=1.25.5",
+    "faiss-cpu>=1.13.2",
+    "deepagents>=0.3.1",
 ]
 
 [project.scripts]

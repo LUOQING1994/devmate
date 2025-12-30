@@ -21,6 +21,7 @@ def ingest_documents(modelName, dashscope_api_key):
             documents.extend(loader.load())
 
     splitter = RecursiveCharacterTextSplitter(
+        separators=["### "],  # 优先级从前到后
         chunk_size=500,
         chunk_overlap=100,
     )

@@ -1,0 +1,19 @@
+[project]
+name = "hike_trails_website"
+version = "1.0.0"
+description = "A hiking trails website with interactive maps"
+authors = [
+    {name = "Hike Trails Team", email = "team@hiketrails.com"}
+]
+dependencies = [
+    "fastapi>=0.104.0",
+    "uvicorn>=0.24.0",
+    "python-jose[cryptography]>=3.3.0",
+    "passlib[bcrypt]>=1.7.4",
+    "python-multipart>=0.0.6",
+    "jinja2>=3.1.2",
+    "python-dotenv>=1.0.0",
+]
+
+[project.scripts]
+hike_trails_website = "main:main"

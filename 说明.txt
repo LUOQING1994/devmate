@@ -1,0 +1,3 @@
+需要全局安装
+npm install -g @modelcontextprotocol/server-filesystem
+npm install -g @modelcontextprotocol/server-filesystem
