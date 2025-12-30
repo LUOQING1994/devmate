@@ -1,9 +1,0 @@
-Metadata-Version: 2.4
-Name: hiking_trails
-Version: 0.1.0
-Summary: 东莞徒步路线展示网站
-Author-email: Hiking Trails Team <info@dg-hiking.com>
-Requires-Python: >=3.13
-Requires-Dist: fastapi>=0.104.1
-Requires-Dist: uvicorn>=0.24.0
-Requires-Dist: jinja2>=3.1.2

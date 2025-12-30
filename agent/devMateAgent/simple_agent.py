@@ -1,71 +1,119 @@
+"""
+SimpleAgent：基于 LangGraph 与 DeepAgents 的轻量级对话智能体封装。
 
+模块职责：
+- 初始化并配置后端大语言模型（支持流式输出）
+- 加载系统级 Prompt，用于约束智能体整体行为
+- 创建具备“跨轮次记忆能力”的 Agent（基于 LangGraph Checkpointer）
+- 对外提供统一、简洁的流式交互接口
+
+设计说明：
+- 使用 thread_id 对对话进行隔离，支持多用户 / 多会话场景
+- Agent 的内部实现细节对调用方完全透明，便于后续演进
+- 当前实现偏向工程可读性与可维护性，而非最小 Demo
+"""
+
+# ===== 标准库 =====
 import os
+from typing import Iterable
+
+# ===== 第三方库 =====
 from langchain_openai import ChatOpenAI
+from langgraph.checkpoint.memory import InMemorySaver
 from deepagents import create_deep_agent
 
-from langgraph.checkpoint.memory import InMemorySaver
+# ===== 本地模块 =====
 from utils.load_prompt import load_prompt
 
-class SimpleAgent():
 
-    def __init__(self, tools):
-        #  == 提示词 =================
-        program_prompts = load_prompt("program_prompt.txt")
-        #  ==========================
-        
-        #  == 对话模型秘钥基础配置 =================
-        llm_model_key = os.getenv("CODE_MODEL_KEY", "")
-        llm_api_base_url = os.getenv("CODE_LLM_BASE_URL", "")
-        llm_model = os.getenv("CODE_LLM_NAME", "")
+class SimpleAgent:
+    """
+    SimpleAgent 是一个面向工程实践的智能体封装类。
 
-        # 初始化后端大模型
-        model = ChatOpenAI(
-            model = llm_model,
-            api_key = llm_model_key,
-            base_url = llm_api_base_url,
-            temperature = 0.8,
-            streaming = True
+    该类负责：
+    - 管理 LLM 初始化与配置
+    - 统一 Prompt 加载入口
+    - 构建带有记忆能力的 Agent 实例
+    - 提供异步、流式的对话接口
+    """
+
+    def __init__(self, tools: list):
+        """
+        初始化 SimpleAgent。
+
+        Args:
+            tools: 智能体可使用的工具列表（如 MCP 工具、搜索工具、文件系统工具等）
+        """
+
+        # ===== 加载系统级 Prompt =====
+        # 系统 Prompt 用于定义 Agent 的角色、能力边界与行为规范
+        self.system_prompt = load_prompt("program_prompt.txt")
+
+        # ===== 从环境变量中读取 LLM 配置 =====
+        # 这样做可以避免将敏感信息硬编码在代码中
+        self.llm_api_key = os.getenv("API_KEY", "")
+        self.llm_base_url = os.getenv("AI_BASE_URL", "")
+        self.llm_model_name = os.getenv("MODEL_NAME", "")
+
+        # ===== 初始化大语言模型 =====
+        # 启用 streaming 以支持实时输出
+        self.model = ChatOpenAI(
+            model=self.llm_model_name,
+            api_key=self.llm_api_key,
+            base_url=self.llm_base_url,
+            temperature=0.8,
+            streaming=True
         )
-        
-        # 创建记忆存储 (Memory/Persistence)
-        # 在最新的 LangChain 中，通过 checkpointer 实现跨轮次记忆
-        memory = InMemorySaver()
-        
-        # 5. 创建智能体 (Agent)
-        # 这是最新文档推荐的简化写法
-#         program_prompts = """使用python生成一个冒泡排序，生成的代码文件已sord.py命名。并调用 'filesystem' 保持到本地磁盘。
-#         ## 工具说明
-#         filesystem: 
-#         1. **项目规划**：首先向用户简述你的项目结构设计。
-#         2. **创建目录**：使用 'create_directory' 工具，按照查询得到的规范，预先创建所有必要的文件夹。
-#         3. **写入文件**：使用 'write_file' 工具将代码写入对应的路径。
-#         - 在调用 write_file 时，请直接使用相对路径（如 sore.py 或 src/main.js），严禁在路径开头添加斜杠 / 或盘符 C:
-#         - 只能使用相对路径。禁止在路径开头使用正斜杠 / 或反斜杠 \。
-#         - 严禁在对话框中直接输出大段 Markdown 代码块，除非用户明确要求预览。
-#         - 所有的 JS/HTML/Python 代码必须保证语法正确，CSS 必须符合样式规范。
-#         - 每次写入文件后，请简要说明该文件的用途。
-#         - 严禁幻觉！如果没有调用 write_file 工具并收到成功的返回，绝对不允许向用户报告“已保存”。
-#         - 如果工具返回 'Error'，你必须如实告知用户错误原因。
-#         4. 请始终使用相对于根目录的路径。例如：
-#         - 错误写法：path="/sort.py" 或 path="F:/.../sort.py"
-#         5. 如果你需要创建子文件夹，请先调用 create_directory(path="src")，然后调用 write_file(path="src/main.js")。
-#    """
+
+        # ===== 初始化记忆存储（Checkpoint） =====
+        # 在 LangGraph 中，记忆通过 checkpointer 实现
+        # InMemorySaver 适合本地调试或 Demo 场景
+        self.memory = InMemorySaver()
+
+        # ===== 创建智能体实例 =====
+        # DeepAgent 会自动将模型、工具和记忆整合到执行图中
         self.agent = create_deep_agent(
-            model=model,
+            model=self.model,
             tools=tools,
-            system_prompt= program_prompts,
-            checkpointer = memory
+            system_prompt=self.system_prompt,
+            checkpointer=self.memory,
         )
-        
-        # 6. 运行智能体并测试记忆功能
-        # 我们通过 thread_id 来区分不同的对话线程（即“记忆”的索引）
-        self.config = {"configurable": {"thread_id": "user_123"}}
-     
+
+        # ===== Agent 执行配置 =====
+        # thread_id 用于区分不同对话线程，是“记忆隔离”的关键
+        self.config = {
+            "configurable": {
+                "thread_id": "user_123"
+            }
+        }
+
     async def stream(self, user_input: str):
+        """
+        以流式方式与智能体进行交互。
 
-        input_obj = {"messages": [{"role": "user", "content": user_input }]}
-        
-        async for chunk in self.agent.astream(input_obj, self.config, stream_mode="values"):
+        Args:
+            user_input: 用户输入的自然语言文本
+
+        Yields:
+            智能体在推理与生成过程中的实时输出结果
+        """
+
+        # 构造符合 LangGraph 规范的输入结构
+        input_payload = {
+            "messages": [
+                {
+                    "role": "user",
+                    "content": user_input,
+                }
+            ]
+        }
+
+        # 以流式方式执行 Agent
+        async for chunk in self.agent.astream(
+            input_payload,
+            self.config,
+            stream_mode="values",
+        ):
+            # pretty_print 主要用于开发与调试阶段，
+            # 生产环境中可替换为日志或前端事件推送
             chunk["messages"][-1].pretty_print()
-
-            
