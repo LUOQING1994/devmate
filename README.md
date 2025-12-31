@@ -25,10 +25,10 @@
 - **配置优先**：所有模型、API Key、服务地址均通过环境变量配置，避免硬编码。
 - **渐进式交付**：每一个阶段都保证代码结构清晰、可运行、可追溯（Git Commit）。
 - **跨平台兼容**：本地开发环境为 Windows，代码实现中统一使用 pathlib，确保在 Linux / Docker 环境中正常运行。
-   DevMate 使用 docker-compose 编排以下服务：
-   - devmate-app：核心智能体应用
-   - mcp-search：基于 MCP 的搜索服务
-   - vector-db：RAG 向量数据持久化服务
+  DevMate 使用 docker-compose 编排以下服务：
+  - devmate-app：核心智能体应用
+  - mcp-search：基于 MCP 的搜索服务
+  - vector-db：RAG 向量数据持久化服务
 
 ## 👈 DevMate智能体流程
 
@@ -114,23 +114,16 @@ devmate/
 │               - 定义 Agent 的角色、行为边界与能力描述
 │               - 是 Agent 行为一致性的核心配置文件
 
-├── mcp_server
-│   ├── __init__.py
-│   │   └── MCP 服务模块初始化文件。
-│
-│   ├── TavilyMcpServer.py
-│   │   └── MCP Search Server 实现：
-│   │       - 基于 MCP 协议对外暴露 search_web 工具
-│   │       - 内部使用 Tavily 搜索 API
-│   │       - 支持 Agent 通过 MCP 进行联网信息检索
-│
-│   ├── McpClient.py
-│   │   └── MCP Client 管理器：
-│   │       - 统一管理多个 MCP Server（搜索 / 文件系统等）
-│   │       - 负责工具发现、生命周期管理与安全边界控制
-│
-│   └── old_client.py
-│       └── 早期 MCP Client 实验代码或历史实现，保留用于参考与对比。
+├── docker
+│   ├── docker-compose.yml
+│   │       └── 编排服务 (App + Vector DB + MCP Server)
+│   └── Dockerfile
+│           └── 构建 DevMate 应用镜像。
+
+├── generated_projects
+│   ├── hiking_trails
+│   │       └── DevMate 生成的网站代码（可运行）
+
 
 ├── knowledge_db
 │   ├── docs
@@ -153,6 +146,34 @@ devmate/
 │               - 根据用户问题进行相似度搜索
 │               - 返回相关上下文供 Agent 合成回答
 
+├── log
+│   ├── __init__.py
+│   │   └── 日志模块初始化文件。
+│
+│   └── logging_config.py
+│       └── 全局日志配置：
+│           - 统一日志格式
+│           - 支持彩色输出与不同日志级别
+│           - 便于调试与生产环境观察
+
+├── mcp_server
+│   ├── __init__.py
+│   │   └── MCP 服务模块初始化文件。
+│
+│   ├── TavilyMcpServer.py
+│   │   └── MCP Search Server 实现：
+│   │       - 基于 MCP 协议对外暴露 search_web 工具
+│   │       - 内部使用 Tavily 搜索 API
+│   │       - 支持 Agent 通过 MCP 进行联网信息检索
+│
+│   ├── McpClient.py
+│   │   └── MCP Client 管理器：
+│   │       - 统一管理多个 MCP Server（搜索 / 文件系统等）
+│   │       - 负责工具发现、生命周期管理与安全边界控制
+│
+│   └── client_test.py
+│       └── 早期 MCP Client 实验代码或历史实现，保留用于参考与对比。
+
 ├── utils
 │   ├── __init__.py
 │   │   └── 工具模块初始化文件。
@@ -167,35 +188,6 @@ devmate/
 │           - 封装为 Agent 可调用的 Tool
 │           - 用于从本地知识库中召回相关内容
 
-├── log
-│   ├── __init__.py
-│   │   └── 日志模块初始化文件。
-│
-│   └── logging_config.py
-│       └── 全局日志配置：
-│           - 统一日志格式
-│           - 支持彩色输出与不同日志级别
-│           - 便于调试与生产环境观察
-
-├── generated_projects
-│   └── Agent 自动生成的代码输出目录：
-│       - 通过 Filesystem MCP 创建
-│       - 存放由 Agent 生成的多文件项目结果
-
-├── docker
-│   └── Docker 相关配置目录（预留）：
-│       - 用于未来容器化部署
-│       - 提升项目可移植性与交付能力
-
-├── simple_mcp_angent.py
-│   └── 项目主运行入口：
-│       - 初始化 MCP Client
-│       - 组装 Agent 工具链
-│       - 启动 DevMate 并进入交互式对话循环
-
-├── test.py
-│   └── 临时测试或实验脚本，用于功能验证或调试。
-
 ├── word
 │   ├── checklist.md
 │   │   └── 面试题验收清单，对照功能点进行自检。
@@ -206,15 +198,19 @@ devmate/
 │   └── 徒步网站截图.png
 │       └── 生成项目的示例截图或需求参考图片。
 
-└── 说明.txt
-    └── 项目补充说明或个人备注文件。
-
+├── simple_mcp_angent.py
+│   └── 项目主运行入口：
+│       - 初始化 MCP Client
+│       - 组装 Agent 工具链
+│       - 启动 DevMate 并进入交互式对话循环
 ```
+
 ## 🧭 DevMate 项目研发迭代计划
 
 ---
 
 ### ✅ **Iteration 1：项目骨架与工程规范搭建**
+
 **目标：建立可长期演进的工程基础**
 
 - 初始化标准 Python 项目结构（`pyproject.toml`）
@@ -228,6 +224,7 @@ devmate/
 ---
 
 ### ✅ **Iteration 2：MCP Server + 实时网络搜索能力**
+
 **目标：让 Agent 具备“连接真实世界”的能力**
 
 - 实现 MCP Search Server（基于 Tavily）
@@ -241,6 +238,7 @@ devmate/
 ---
 
 ### ✅ **Iteration 3：RAG 本地知识库检索能力**
+
 **目标：构建稳定、可追溯的本地知识体系**
 
 - 构建完整 RAG 流程：
@@ -257,6 +255,7 @@ devmate/
 ---
 
 ### ✅ **Iteration 4：多文件项目生成与代码修改能力**
+
 **目标：从“回答问题”进化为“交付代码”**
 
 - 支持 Agent 生成完整的多文件项目结构
@@ -272,7 +271,8 @@ devmate/
 
 ---
 
-### ⏳ **Iteration 5：系统级整合与工程化验证**
+### ✅**Iteration 5：系统级整合与工程化验证**
+
 **目标：验证 DevMate 的工程级可用性与交付能力**
 
 - Docker 化部署：
