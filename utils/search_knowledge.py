@@ -15,6 +15,6 @@ def search_knowledge_base(query: str) -> str:
 
     rag_engine = LocalRAGRetriever(EMBEDDING_MODEL_NAME, EMBEDDING_MODEL_KEY)
     
-    results = rag_engine.search_knowledge_recall(query, k=3)
+    results = rag_engine.search_knowledge_recall(query, k=5)
     
     return results

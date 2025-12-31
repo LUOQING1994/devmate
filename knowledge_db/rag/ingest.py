@@ -20,6 +20,7 @@ import os
 # ===== 第三方库 =====
 from dotenv import load_dotenv
 from langchain_community.document_loaders import TextLoader
+from langchain_text_splitters import MarkdownHeaderTextSplitter
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import DashScopeEmbeddings
 from langchain_community.vectorstores import FAISS
@@ -48,29 +49,45 @@ def ingest_documents(model_name: str, dashscope_api_key: str) -> None:
         dashscope_api_key: DashScope API Key
     """
 
-    documents = []
+    all_chunks = [] # 用于存放最终切分好的 chunk
 
     # ===== 加载本地文档 =====
     for file_path in KB_DIR.glob("*"):
         if file_path.suffix in {".md", ".txt"}:
-            loader = TextLoader(
-                str(file_path),
-                encoding="utf-8",
+            loader = TextLoader(str(file_path), encoding="utf-8")
+            # 注意：load() 返回的是 List[Document]
+            docs_from_file = loader.load()
+
+            # ===== 文本切分（针对每个文件） =====
+            headers_to_split_on = [("###", "Header 3")]
+            markdown_splitter = MarkdownHeaderTextSplitter(
+                headers_to_split_on=headers_to_split_on, 
+                strip_headers=False
             )
-            documents.extend(loader.load())
 
-    if not documents:
-        print("⚠️ 未在知识库目录中发现可用文档。")
+            for doc in docs_from_file:
+                # 1. 提取原始元数据（包含 source）
+                original_metadata = doc.metadata 
+
+                # 2. 执行 Markdown 逻辑切分
+                # 注意：这里返回的是 List[Document]，metadata 里只有 Header 信息
+                md_header_splits = markdown_splitter.split_text(doc.page_content)
+
+                # 3. 手动将原始元数据（source）补回给每一个 md_split 对象
+                for md_split in md_header_splits:
+                    # 合并字典：保留 Header 标题，同时加入原始的 source 信息
+                    md_split.metadata.update(original_metadata)
+
+                # 4. 执行二次切分（处理超长块）
+                # split_documents 会自动保留已有的 metadata
+                text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
+                chunks = text_splitter.split_documents(md_header_splits)
+                
+                all_chunks.extend(chunks)
+
+    if not all_chunks:
+        print("⚠️ 未发现可用文档或切分失败。")
         return
-
-    # ===== 文本切分（Chunking） =====
-    # 使用递归切分器，并优先按 Markdown 标题进行分割
-    splitter = RecursiveCharacterTextSplitter(
-        separators=["### "],  # 优先按三级标题切分
-        chunk_size=500,
-        chunk_overlap=100,
-    )
-    chunks = splitter.split_documents(documents)
 
     # ===== 初始化 Embedding 模型 =====
     embeddings = DashScopeEmbeddings(
@@ -79,12 +96,12 @@ def ingest_documents(model_name: str, dashscope_api_key: str) -> None:
     )
 
     # ===== 构建向量数据库 =====
-    vectorstore = FAISS.from_documents(chunks, embeddings)
+    vectorstore = FAISS.from_documents(all_chunks, embeddings)
 
     # 持久化向量索引到本地
     vectorstore.save_local(VECTOR_DB_DIR)
 
-    print(f"✅ 成功向量化并索引 {len(chunks)} 个文本块。")
+    print(f"✅ 成功向量化并索引 {len(all_chunks)} 个文本块。")
 
 
 if __name__ == "__main__":
@@ -92,16 +109,29 @@ if __name__ == "__main__":
     脚本入口：
     用于在本地一次性完成知识库的初始化构建。
     """
+    
+    # 1. 获取当前脚本的绝对路径
+    current_file_path = Path(__file__).resolve()
 
+    # 2. 找到项目的根目录 (即向上退一级): 
+    project_root = current_file_path.parent.parent.parent
+
+    # 3. 拼接 .env 的绝对路径: 
+    env_path = project_root / ".env"
+
+    # 4. 加载环境变量
+    load_dotenv(dotenv_path=env_path)
+    # 打印一下，方便在 Docker 日志里调试（可选）
+    print(f"DEBUG: 正在尝试加载 .env 文件，路径: {env_path}")
+    print(f"DEBUG: .env 文件是否存在: {env_path.exists()}")
     # 加载 .env 中的环境变量
-    load_dotenv()
 
     # 从环境变量中读取 Embedding 配置（避免明文写入代码）
-    EMBEDDING_MODEL_NAME = os.getenv("EMBEDDING_MODEL_NAME", "text-embedding-v4")
-    EMBEDDING_MODEL_KEY = os.getenv("DASHSCOPE_API_KEY", "")
+    EMBEDDING_MODEL_NAME = os.getenv("EMBEDDING_MODEL_NAME", "")
+    EMBEDDING_MODEL_KEY = os.getenv("EMBEDDING_MODEL_KEY", "")
 
     if not EMBEDDING_MODEL_KEY:
-        raise RuntimeError("❌ 未检测到 DASHSCOPE_API_KEY，请先配置环境变量。")
+        raise RuntimeError("❌ 未检测到 EMBEDDING_MODEL_KEY，请先配置环境变量。")
 
     ingest_documents(
         model_name=EMBEDDING_MODEL_NAME,

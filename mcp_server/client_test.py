@@ -21,7 +21,7 @@ class MCPSearchClient:
     ):
         self.server_params = StdioServerParameters(
             command=server_command,
-            args=server_args or ["mcp_server/server.py"],
+            args=server_args or ["mcp_server/TavilyMcpServer.py"],
             env=env,
         )
 

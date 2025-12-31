@@ -55,13 +55,14 @@ class LocalRAGRetriever:
             allow_dangerous_deserialization=True,
         )
 
-    def search_knowledge_recall(self, query: str, k: int = 4) -> List[Dict]:
+    def search_knowledge_recall(self, query: str, k: int = 4, score_threshold: int = 0.6) -> List[Dict]:
         """
         在本地知识库中执行相似度检索。
 
         Args:
             query: 用户输入的自然语言查询
             k: 返回的相似文本块数量
+            score_threshold: 相似度阈值。
 
         Returns:
             一个包含多个知识片段的列表，每个片段包含：
@@ -70,10 +71,15 @@ class LocalRAGRetriever:
             - 具体内容
         """
 
-        docs = self.vectorstore.similarity_search(query, k=k)
+        # 按分数进行选择返回
+        docs = self.vectorstore.similarity_search_with_score(query, k=k)
 
         results: List[Dict] = []
-        for idx, doc in enumerate(docs):
+        for idx, (doc, score) in enumerate(docs):
+            # 过滤逻辑：只保留距离小于阈值的片段
+            if score > score_threshold:
+                continue
+            
             results.append(
                 {
                     "来源": doc.metadata.get("source", "unknown"),
@@ -90,10 +96,31 @@ if __name__ == "__main__":
     本地调试入口：
     用于快速验证知识库检索是否生效。
     """
+    import os
+    from dotenv import load_dotenv 
+    # 1. 获取当前脚本的绝对路径
+    current_file_path = Path(__file__).resolve()
 
-    # 示例配置（生产环境中应通过环境变量或配置文件注入）
-    EMBEDDING_MODEL_NAME = "text-embedding-v4"
-    EMBEDDING_MODEL_KEY = "YOUR_DASHSCOPE_API_KEY"
+    # 2. 找到项目的根目录 (即向上退一级): 
+    project_root = current_file_path.parent.parent.parent
+
+    # 3. 拼接 .env 的绝对路径: 
+    env_path = project_root / ".env"
+
+    # 4. 加载环境变量
+    load_dotenv(dotenv_path=env_path)
+    # 打印一下，方便在 Docker 日志里调试（可选）
+    print(f"DEBUG: 正在尝试加载 .env 文件，路径: {env_path}")
+    print(f"DEBUG: .env 文件是否存在: {env_path.exists()}")
+    # 加载 .env 中的环境变量
+
+    # 从环境变量中读取 Embedding 配置（避免明文写入代码）
+    EMBEDDING_MODEL_NAME = os.getenv("EMBEDDING_MODEL_NAME", "")
+    EMBEDDING_MODEL_KEY = os.getenv("EMBEDDING_MODEL_KEY", "")
+
+    if not EMBEDDING_MODEL_KEY:
+        raise RuntimeError("❌ 未检测到 EMBEDDING_MODEL_KEY，请先配置环境变量。")
+    
 
     retriever = LocalRAGRetriever(
         model_name=EMBEDDING_MODEL_NAME,
