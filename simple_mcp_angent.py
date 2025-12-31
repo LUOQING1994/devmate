@@ -52,7 +52,7 @@ async def run_my_agent() -> None:
 
     # ===== 1. MCP 配置 =====
     # 当前项目根目录（作为 Filesystem MCP 的安全访问边界）
-    project_root = os.path.join(os.path.abspath("."), "generated_projects")
+    project_root = os.path.join(os.path.abspath("."), "./")
 
     logger.info(
         "已授权 Filesystem MCP 访问目录及其子目录: %s",

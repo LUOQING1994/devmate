@@ -11,6 +11,10 @@
 - 当前采用 FAISS 作为本地向量存储，适合单机 / Demo / 面试场景
 - 文档切分策略针对 Markdown 标题结构进行了简单优化
 - Embedding 模型通过参数注入，便于后续替换
+
+特别说明：
+- 构建知识库时，一个MD文件代表一类前端代码生成规范。若想生成多类网站规范，请直接添加MD即可。
+    
 """
 
 # ===== 标准库 =====
@@ -80,7 +84,7 @@ def ingest_documents(model_name: str, dashscope_api_key: str) -> None:
 
                 # 4. 执行二次切分（处理超长块）
                 # split_documents 会自动保留已有的 metadata
-                text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
+                text_splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=100)
                 chunks = text_splitter.split_documents(md_header_splits)
                 
                 all_chunks.extend(chunks)
