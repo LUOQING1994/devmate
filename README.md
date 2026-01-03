@@ -30,6 +30,24 @@
   - mcp-search：基于 MCP 的搜索服务
   - vector-db：RAG 向量数据持久化服务
 
+## 启动
+### 系统要求
+在运行项目前，请确保您的机器满足以下最低系统要求：
+- CPU >= 2 Core
+- RAM >= 4 GiB
+- docker >= 4.55
+- uv >= 0.9.18
+
+## 快速启动
+启动服务器的最简单方法是运行[docker-compose.yml](https://github.com/LUOQING1994/devmate/tree/main/docker/docker-compose.yml) 文件。在运行安装命令之前，请确保您的机器上安装了 [Docker](https://docs.docker.com/get-docker/) 和 [Docker Compose](https://docs.docker.com/compose/install/)：
+```text
+cd docker
+cp .env.example .env
+docker compose build --no-cache
+docker-compose run --rm devmate-app
+```
+运行后，可以在终端上进行交互。
+
 ## 👈 DevMate智能体流程
 
 ```text
