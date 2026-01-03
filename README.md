@@ -31,22 +31,35 @@
   - vector-db：RAG 向量数据持久化服务
 
 ## 启动
+
 ### 系统要求
+
 在运行项目前，请确保您的机器满足以下最低系统要求：
+
 - CPU >= 2 Core
 - RAM >= 4 GiB
 - docker >= 4.55
 - uv >= 0.9.18
 
 ## 快速启动
+
 启动服务器的最简单方法是运行[docker-compose.yml](https://github.com/LUOQING1994/devmate/tree/main/docker/docker-compose.yml) 文件。在运行安装命令之前，请确保您的机器上安装了 [Docker](https://docs.docker.com/get-docker/) 和 [Docker Compose](https://docs.docker.com/compose/install/)：
+
 ```text
 cd docker
 cp .env.example .env
 docker compose build --no-cache
 docker-compose run --rm devmate-app
 ```
+
 运行后，可以在终端上进行交互。
+
+## DevMate智能体生成网站成果展示
+项目位置：根目录\generated_projects\hiking_trails
+提示：DevMate智能体每次运行生成的网站风格都略有不同。当前展示只验证DevMate智能体完整的生成结果
+![](https://jaatcnu6ilk.feishu.cn/space/api/box/stream/download/asynccode/?code=OTlkZDg4ZmQ3NWFmMDBhOGFmNmVmODFjYzA2MzQ4OWRfWXpzM3llZ3hrMmp4UFNvNHFmQ09NMkxZc3JKR1cyM3VfVG9rZW46TllzTGJEakczb3JGcTZ4QVNWWGNPRTFqbkNiXzE3Njc0MTAyOTA6MTc2NzQxMzg5MF9WNA)![](https://jaatcnu6ilk.feishu.cn/space/api/box/stream/download/asynccode/?code=ZmE2ZTlmZWNhZjBmYTRlNDVkMTA0NWU2OTgxZDk2N2JfaVZ0aGFpOGs1R3pCMkllVGszdWp3UWpYOVFVVWFnaVhfVG9rZW46R2wxa2JFNVNyb29qNzd4dnZwM2NSdFoybk5jXzE3Njc0MTAyOTA6MTc2NzQxMzg5MF9WNA)
+
+![](https://jaatcnu6ilk.feishu.cn/space/api/box/stream/download/asynccode/?code=Nzc0NjFhMjJjZjYzNGZlODM3M2E3NThjOGQ3NTQyMjJfM1ZrSVFxbGNJSmZBb3JGeGNYVDFVNEZTS0phYldtOUFfVG9rZW46S2RSdWI1RlREb0I3SVl4azMxRmN2WWJjblNlXzE3Njc0MTAyOTA6MTc2NzQxMzg5MF9WNA)![](https://jaatcnu6ilk.feishu.cn/space/api/box/stream/download/asynccode/?code=Nzg2Mzk0NjZlMzEzMDRkNWY2ZDc0OGNiNGU3ZTViZDBfOGNGVWliVDlHcFJNV1lVdDdIRGxETmVaUVJiZUdGS0JfVG9rZW46THY4R2JsYmQ2b1hZWlF4anJFcGNjWGpDblVoXzE3Njc0MTAyOTA6MTc2NzQxMzg5MF9WNA)
 
 ## 👈 DevMate智能体流程
 
