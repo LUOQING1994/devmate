@@ -57,9 +57,9 @@ docker-compose run --rm devmate-app
 ## DevMate智能体生成网站成果展示
 项目位置：根目录\generated_projects\hiking_trails
 提示：DevMate智能体每次运行生成的网站风格都略有不同。当前展示只验证DevMate智能体完整的生成结果
-![](https://jaatcnu6ilk.feishu.cn/space/api/box/stream/download/asynccode/?code=OTlkZDg4ZmQ3NWFmMDBhOGFmNmVmODFjYzA2MzQ4OWRfWXpzM3llZ3hrMmp4UFNvNHFmQ09NMkxZc3JKR1cyM3VfVG9rZW46TllzTGJEakczb3JGcTZ4QVNWWGNPRTFqbkNiXzE3Njc0MTAyOTA6MTc2NzQxMzg5MF9WNA)![](https://jaatcnu6ilk.feishu.cn/space/api/box/stream/download/asynccode/?code=ZmE2ZTlmZWNhZjBmYTRlNDVkMTA0NWU2OTgxZDk2N2JfaVZ0aGFpOGs1R3pCMkllVGszdWp3UWpYOVFVVWFnaVhfVG9rZW46R2wxa2JFNVNyb29qNzd4dnZwM2NSdFoybk5jXzE3Njc0MTAyOTA6MTc2NzQxMzg5MF9WNA)
+![首页](images/首页.PNG)![路线](images/路线.PNG)
 
-![](https://jaatcnu6ilk.feishu.cn/space/api/box/stream/download/asynccode/?code=Nzc0NjFhMjJjZjYzNGZlODM3M2E3NThjOGQ3NTQyMjJfM1ZrSVFxbGNJSmZBb3JGeGNYVDFVNEZTS0phYldtOUFfVG9rZW46S2RSdWI1RlREb0I3SVl4azMxRmN2WWJjblNlXzE3Njc0MTAyOTA6MTc2NzQxMzg5MF9WNA)![](https://jaatcnu6ilk.feishu.cn/space/api/box/stream/download/asynccode/?code=Nzg2Mzk0NjZlMzEzMDRkNWY2ZDc0OGNiNGU3ZTViZDBfOGNGVWliVDlHcFJNV1lVdDdIRGxETmVaUVJiZUdGS0JfVG9rZW46THY4R2JsYmQ2b1hZWlF4anJFcGNjWGpDblVoXzE3Njc0MTAyOTA6MTc2NzQxMzg5MF9WNA)
+![地图](images/地图.PNG)![关于我们](images/关于我们.PNG)
 
 ## 👈 DevMate智能体流程
 
