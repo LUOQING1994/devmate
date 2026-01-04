@@ -151,6 +151,9 @@ devmate/
 │   └── Dockerfile
 │           └── 构建 DevMate 应用镜像。
 
+├── images
+│   └── 示例图片
+
 ├── generated_projects
 │   ├── hiking_trails
 │   │       └── DevMate 生成的网站代码（可运行）
