@@ -40,7 +40,7 @@ services:
       # 关键：添加一个匿名卷，防止宿主机的 node_modules 或 .venv 覆盖容器内的
       - /app/.venv  
     # 建议使用 uv run 启动，它会自动处理环境路径
-    command: uv run python mcp_server/TavilyMcpServer.py
+    command: uv run python mcp_server/tavily_mcp_server.py
   # ===============================
   # 3. Vector DB（FAISS 数据容器）
   # ===============================
