@@ -27,7 +27,10 @@ services:
   # 2. MCP Search Server（Tavily）
   # ===============================
   mcp-search:
-    image: devmate-app:latest  # 确保这里引用的是上面 build 出来的镜像名
+    build:
+        context: ..
+        dockerfile: docker/Dockerfile
+    image: devmate-mcp-search:latest
     container_name: devmate-mcp-search
     working_dir: /app
     env_file:
