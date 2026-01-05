@@ -64,7 +64,7 @@ class MCPClientManager:
             "mcp_server": {
                 "transport": "stdio",
                 "command": "python",
-                "args": ["mcp_server/TavilyMcpServer.py"],
+                "args": ["mcp_server/tavily_mcp_server.py"],
             },
             "filesystem": {
                 "transport": "stdio",

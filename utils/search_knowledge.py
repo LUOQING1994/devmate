@@ -2,6 +2,7 @@ import os
 from langchain_core.tools import tool
 from knowledge_db.rag.retriever import LocalRAGRetriever
 
+
 # 2. 定义 Tool
 @tool
 def search_knowledge_base(query: str) -> str:
@@ -14,7 +15,7 @@ def search_knowledge_base(query: str) -> str:
     EMBEDDING_MODEL_KEY = os.getenv("EMBEDDING_MODEL_KEY", "")
 
     rag_engine = LocalRAGRetriever(EMBEDDING_MODEL_NAME, EMBEDDING_MODEL_KEY)
-    
+
     results = rag_engine.search_knowledge_recall(query, k=5)
-    
+
     return results

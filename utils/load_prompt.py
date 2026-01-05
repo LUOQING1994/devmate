@@ -43,9 +43,7 @@ def find_project_root(marker: str = "pyproject.toml") -> str:
 
         # 已递归到文件系统根目录，仍未找到 marker
         if parent_dir == current_dir:
-            raise RuntimeError(
-                f"未找到项目根目录：未检测到标记文件 '{marker}'"
-            )
+            raise RuntimeError(f"未找到项目根目录：未检测到标记文件 '{marker}'")
 
         current_dir = parent_dir
 
@@ -69,9 +67,7 @@ def load_prompt(name: str) -> str:
     file_path = os.path.join(prompts_dir, name)
 
     if not os.path.exists(file_path):
-        raise FileNotFoundError(
-            f"未找到 Prompt 文件: {file_path}"
-        )
+        raise FileNotFoundError(f"未找到 Prompt 文件: {file_path}")
 
     with open(file_path, "r", encoding="utf-8") as file:
         return file.read()

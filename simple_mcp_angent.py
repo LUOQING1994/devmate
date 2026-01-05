@@ -18,13 +18,12 @@ import os
 import sys
 import asyncio
 import logging
-from pathlib import Path
 
 # ===== 第三方库 =====
 from dotenv import load_dotenv
 
 # ===== 本地模块 =====
-from mcp_server.McpClient import MCPClientManager
+from mcp_server.mcp_client import MCPClientManager
 from agent.devMateAgent.simple_agent import SimpleAgent
 from utils.search_knowledge import search_knowledge_base
 from log.logging_config import setup_logging
@@ -63,7 +62,7 @@ async def run_my_agent() -> None:
         "mcp_server": {
             "transport": "stdio",
             "command": "python",
-            "args": ["mcp_server/TavilyMcpServer.py"],
+            "args": ["mcp_server/tavily_mcp_server.py"],
         },
         "filesystem": {
             "transport": "stdio",
@@ -84,7 +83,7 @@ async def run_my_agent() -> None:
         # 打印并确认已加载的 MCP 工具
         for tool in tools:
             logger.info("已加载 MCP 工具: %s", tool.name)
-            
+
         # ===== 3. 初始化 Agent（仅执行一次） =====
         devmate_agent = SimpleAgent(tools)
 

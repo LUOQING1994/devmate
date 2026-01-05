@@ -53,7 +53,7 @@ def ingest_documents(model_name: str, dashscope_api_key: str) -> None:
         dashscope_api_key: DashScope API Key
     """
 
-    all_chunks = [] # 用于存放最终切分好的 chunk
+    all_chunks = []  # 用于存放最终切分好的 chunk
 
     # ===== 加载本地文档 =====
     for file_path in KB_DIR.glob("*"):
@@ -65,13 +65,12 @@ def ingest_documents(model_name: str, dashscope_api_key: str) -> None:
             # ===== 文本切分（针对每个文件） =====
             headers_to_split_on = [("###", "Header 3")]
             markdown_splitter = MarkdownHeaderTextSplitter(
-                headers_to_split_on=headers_to_split_on, 
-                strip_headers=False
+                headers_to_split_on=headers_to_split_on, strip_headers=False
             )
 
             for doc in docs_from_file:
                 # 1. 提取原始元数据（包含 source）
-                original_metadata = doc.metadata 
+                original_metadata = doc.metadata
 
                 # 2. 执行 Markdown 逻辑切分
                 # 注意：这里返回的是 List[Document]，metadata 里只有 Header 信息
@@ -84,9 +83,11 @@ def ingest_documents(model_name: str, dashscope_api_key: str) -> None:
 
                 # 4. 执行二次切分（处理超长块）
                 # split_documents 会自动保留已有的 metadata
-                text_splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=100)
+                text_splitter = RecursiveCharacterTextSplitter(
+                    chunk_size=800, chunk_overlap=100
+                )
                 chunks = text_splitter.split_documents(md_header_splits)
-                
+
                 all_chunks.extend(chunks)
 
     if not all_chunks:
@@ -113,14 +114,14 @@ if __name__ == "__main__":
     脚本入口：
     用于在本地一次性完成知识库的初始化构建。
     """
-    
+
     # 1. 获取当前脚本的绝对路径
     current_file_path = Path(__file__).resolve()
 
-    # 2. 找到项目的根目录 (即向上退一级): 
+    # 2. 找到项目的根目录 (即向上退一级):
     project_root = current_file_path.parent.parent.parent
 
-    # 3. 拼接 .env 的绝对路径: 
+    # 3. 拼接 .env 的绝对路径:
     env_path = project_root / ".env"
 
     # 4. 加载环境变量

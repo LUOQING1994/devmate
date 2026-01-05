@@ -30,10 +30,10 @@ from pathlib import Path
 # 1. 获取当前脚本的绝对路径
 current_file_path = Path(__file__).resolve()
 
-# 2. 找到项目的根目录 (即向上退一级): 
+# 2. 找到项目的根目录 (即向上退一级):
 project_root = current_file_path.parent.parent
 
-# 3. 拼接 .env 的绝对路径: 
+# 3. 拼接 .env 的绝对路径:
 env_path = project_root / ".env"
 
 # 4. 加载环境变量
@@ -60,10 +60,7 @@ async def handle_list_tools():
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "query": {
-                        "type": "string",
-                        "description": "需要搜索的关键词或问题"
-                    }
+                    "query": {"type": "string", "description": "需要搜索的关键词或问题"}
                 },
                 "required": ["query"],
             },

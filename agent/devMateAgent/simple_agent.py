@@ -15,7 +15,6 @@ SimpleAgent：基于 LangGraph 与 DeepAgents 的轻量级对话智能体封装�
 
 # ===== 标准库 =====
 import os
-from typing import Iterable
 
 # ===== 第三方库 =====
 from langchain_openai import ChatOpenAI
@@ -62,7 +61,7 @@ class SimpleAgent:
             api_key=self.llm_api_key,
             base_url=self.llm_base_url,
             temperature=0.8,
-            streaming=True
+            streaming=True,
         )
 
         # ===== 初始化记忆存储（Checkpoint） =====
@@ -81,11 +80,7 @@ class SimpleAgent:
 
         # ===== Agent 执行配置 =====
         # thread_id 用于区分不同对话线程，是“记忆隔离”的关键
-        self.config = {
-            "configurable": {
-                "thread_id": "user_123"
-            }
-        }
+        self.config = {"configurable": {"thread_id": "user_123"}}
 
     async def stream(self, user_input: str):
         """

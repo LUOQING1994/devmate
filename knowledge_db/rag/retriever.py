@@ -55,7 +55,9 @@ class LocalRAGRetriever:
             allow_dangerous_deserialization=True,
         )
 
-    def search_knowledge_recall(self, query: str, k: int = 4, score_threshold: int = 0.6) -> List[Dict]:
+    def search_knowledge_recall(
+        self, query: str, k: int = 4, score_threshold: int = 0.6
+    ) -> List[Dict]:
         """
         在本地知识库中执行相似度检索。
 
@@ -79,7 +81,7 @@ class LocalRAGRetriever:
             # 过滤逻辑：只保留距离小于阈值的片段
             if score > score_threshold:
                 continue
-            
+
             results.append(
                 {
                     "来源": doc.metadata.get("source", "unknown"),
@@ -97,14 +99,15 @@ if __name__ == "__main__":
     用于快速验证知识库检索是否生效。
     """
     import os
-    from dotenv import load_dotenv 
+    from dotenv import load_dotenv
+
     # 1. 获取当前脚本的绝对路径
     current_file_path = Path(__file__).resolve()
 
-    # 2. 找到项目的根目录 (即向上退一级): 
+    # 2. 找到项目的根目录 (即向上退一级):
     project_root = current_file_path.parent.parent.parent
 
-    # 3. 拼接 .env 的绝对路径: 
+    # 3. 拼接 .env 的绝对路径:
     env_path = project_root / ".env"
 
     # 4. 加载环境变量
@@ -120,7 +123,6 @@ if __name__ == "__main__":
 
     if not EMBEDDING_MODEL_KEY:
         raise RuntimeError("❌ 未检测到 EMBEDDING_MODEL_KEY，请先配置环境变量。")
-    
 
     retriever = LocalRAGRetriever(
         model_name=EMBEDDING_MODEL_NAME,
