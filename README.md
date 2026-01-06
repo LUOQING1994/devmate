@@ -46,8 +46,8 @@
 启动服务器的最简单方法是运行[docker-compose.yml](https://github.com/LUOQING1994/devmate/tree/main/docker/docker-compose.yml) 文件。在运行安装命令之前，请确保您的机器上安装了 [Docker](https://docs.docker.com/get-docker/) 和 [Docker Compose](https://docs.docker.com/compose/install/)：
 
 ```text
-cd docker
 cp .env.example .env
+cd docker
 docker compose build --no-cache
 docker-compose run --rm devmate-app
 ```
